@@ -10,5 +10,11 @@ namespace FooTests
         {
             var grault = new Grault();
         }
+
+        [Fact]
+        public void ThisTestShouldFail()
+        {
+            Assert.True(false);
+        }
     }
 }
