@@ -8,6 +8,15 @@ build:
   verbosity: minimal
 artifacts:
 - path: Bar\bin\Release\Bar.*.nupkg
+deploy:
+- provider: GitHub
+  tag: $(appveyor_repo_tag_name)
+  release: $(appveyor_repo_tag_name)
+  auth_token:
+    secure: yjDw1QLeuxM3Wvq9ZEJIB8JaEK/L2e7MhwrKicm3/SBh0FwbAEb3Fpg82h0fFALU
+  on:
+    appveyor_repo_tag: true
+    appveyor_repo_tag_name: /Bar\.\d+.\d+.\d+(-\w+)?/
 only_commits:
  files:
    - Bar/
