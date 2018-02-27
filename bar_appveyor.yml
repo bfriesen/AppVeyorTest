@@ -8,3 +8,9 @@ build:
   verbosity: minimal
 artifacts:
 - path: Bar\bin\Release\Bar.*.nupkg
+only_commits:
+ files:
+   - Bar/
+   - BarTests/
+   - Bar.sln
+   - bar_appveyor.yml

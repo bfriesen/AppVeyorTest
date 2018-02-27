@@ -8,3 +8,9 @@ build:
   verbosity: minimal
 artifacts:
 - path: Foo\bin\Release\Foo.*.nupkg
+only_commits:
+ files:
+   - Foo/
+   - FooTests/
+   - Foo.sln
+   - foo_appveyor.yml
