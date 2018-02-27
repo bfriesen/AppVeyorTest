@@ -2,9 +2,9 @@ version: '{build}'
 image: Visual Studio 2017
 configuration: Release
 before_build:
-- ps: nuget restore
+- ps: nuget restore Bar.sln
 build:
   project: Bar.sln
   verbosity: minimal
 artifacts:
-- path: Bar\bin\Debug\Bar.*.nupkg
+- path: Bar\bin\Release\Bar.*.nupkg
