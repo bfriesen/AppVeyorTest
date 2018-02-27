@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bar", "Bar\Bar.csproj", "{3D2369CB-2562-4960-A975-A4FFCBDC2616}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarTests", "BarTests\BarTests.csproj", "{1C168BD5-F8B7-4DF3-90A0-D20F7D7DE085}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3D2369CB-2562-4960-A975-A4FFCBDC2616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2369CB-2562-4960-A975-A4FFCBDC2616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2369CB-2562-4960-A975-A4FFCBDC2616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2369CB-2562-4960-A975-A4FFCBDC2616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C168BD5-F8B7-4DF3-90A0-D20F7D7DE085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C168BD5-F8B7-4DF3-90A0-D20F7D7DE085}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C168BD5-F8B7-4DF3-90A0-D20F7D7DE085}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C168BD5-F8B7-4DF3-90A0-D20F7D7DE085}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B9A316F6-F4E5-48C8-B06F-9C75A08308DE}
+	EndGlobalSection
+EndGlobal

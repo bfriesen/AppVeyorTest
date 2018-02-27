@@ -1,0 +1,10 @@
+version: '{build}'
+image: Visual Studio 2017
+configuration: Release
+before_build:
+- ps: nuget restore
+build:
+  project: Bar.sln
+  verbosity: minimal
+artifacts:
+- path: Bar\bin\Debug\Bar.*.nupkg
