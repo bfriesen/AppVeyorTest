@@ -7,4 +7,4 @@ build:
   project: Foo.sln
   verbosity: minimal
 artifacts:
-- path: Foo\bin\Debug\Foo.*.nupkg
+- path: Foo\bin\Release\Foo.*.nupkg
