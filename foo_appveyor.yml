@@ -19,7 +19,7 @@ before_build:
     }
 
 
-    $release_notes = "$env:appveyor_repo_commit_message`r`n`r`n$commit_message_extended".TrimEnd()
+    $release_notes = "$env:appveyor_repo_commit_message`r`n$commit_message_extended".TrimEnd()
 
 
     $file = "Foo\Foo.csproj"
