@@ -13,9 +13,13 @@ before_build:
 
 
     If (($commit_message_extended -ne $null)) {
+      "original: $commit_message_extended"
 
-        $commit_message_extended = $commit_message_extended.Replace("`r`n", "`n").Replace("`n", "`r`n")
+      $commit_message_extended = $commit_message_extended -replace "`r`n", "`n"
+      "only n: $commit_message_extended"
 
+      $commit_message_extended = $commit_message_extended -replace "`n", "`r`n"
+      "rn: $commit_message_extended"
     }
 
 
