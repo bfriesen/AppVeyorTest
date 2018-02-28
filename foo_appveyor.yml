@@ -9,7 +9,7 @@ only_commits:
    - foo_appveyor.yml
 before_build:
 - ps: >-
-    $commit_message_extended = $env.appveyor_repo_commit_message_extended
+    $commit_message_extended = $env:appveyor_repo_commit_message_extended
 
 
     If (($commit_message_extended -ne $null)) {
