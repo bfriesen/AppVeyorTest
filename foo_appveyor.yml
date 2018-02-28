@@ -9,10 +9,17 @@ only_commits:
    - foo_appveyor.yml
 before_build:
 - ps: >-
-    $release_notes = "$env:appveyor_repo_commit_message
+    $commit_message_extended = $env.appveyor_repo_commit_message_extended
 
 
-    $env:appveyor_repo_commit_message_extended".TrimEnd()
+    If (($commit_message_extended -ne $null)) {
+
+        $commit_message_extended = $commit_message_extended.Replace("`r`n", "`n").Replace("`n", "`r`n")
+
+    }
+
+
+    $release_notes = "$env:appveyor_repo_commit_message`r`n`r`n$commit_message_extended".TrimEnd()
 
 
     $file = "Foo\Foo.csproj"
