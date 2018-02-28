@@ -12,9 +12,9 @@ namespace FooTests
         }
 
         [Fact]
-        public void ThisTestShouldFail()
+        public void ThisTestShouldNotFail()
         {
-            Assert.True(false);
+            Assert.True(true);
         }
     }
 }
