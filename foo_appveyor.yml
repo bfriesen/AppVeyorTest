@@ -9,30 +9,44 @@ only_commits:
    - foo_appveyor.yml
 before_build:
 - ps: >-
-    $release_notes = "$env.appveyor_repo_commit_message
+    $release_notes = "$env:appveyor_repo_commit_message
 
-    $env.appveyor_repo_commit_message_extended".TrimEnd()
+
+    $env:appveyor_repo_commit_message_extended".TrimEnd()
+
 
     $file = "Foo\Foo.csproj"
 
+
     $doc = [xml](Get-Content $file)
+
 
     $package_release_notes = $doc.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
 
+
     $package_release_notes.InnerText = $release_notes
+
 
     $doc.Save((get-item $file))
 
+
     $package_id = $doc.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
+
     $package_version = $doc.SelectSingleNode("/Project/PropertyGroup/PackageVersion").InnerText
+
 
     $package_tag = "$package_id.$package_version"
 
+
     Set-AppveyorBuildVariable -Name "release_notes" -Value $release_notes
+
     Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
 
+
     "Release notes: $release_notes"
+
     "Package tag: $package_tag"
+
 
     nuget restore Foo.sln
 build:
