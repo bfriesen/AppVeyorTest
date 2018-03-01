@@ -55,7 +55,7 @@ build:
   project: Foo.sln
   verbosity: minimal
 artifacts:
-- path: **\Foo.*.nupkg
+- path: '**/Foo.*.nupkg'
 deploy:
 - provider: GitHub
   description: $(release_notes)
