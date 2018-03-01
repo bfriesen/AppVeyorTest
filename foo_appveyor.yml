@@ -69,8 +69,8 @@ deploy:
 notifications:
 - provider: Email
   to:
-  - brianfriesen@quickenloans.com
-  - brian.friesen@gmail.com
+  - secure: Tx9xMrSQSYir5UQ7EkBJ/CdwbmB1R/7FdX3vJxENju0=
+  - secure: TstPSnrGjPwZsLR/y/vvVqWODsSadKU6K0MkiviPLKQ=
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: true
