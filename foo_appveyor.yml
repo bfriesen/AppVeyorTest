@@ -9,7 +9,10 @@ only_commits:
    - foo_appveyor.yml
 before_build:
 - ps: >-
-    $release_notes = "$env:appveyor_repo_commit_message`r`n`r`n$env:appveyor_repo_commit_message_extended".Replace("\n", "`n").Replace("\r", "`r").TrimEnd()
+    $nuget_release_notes = "$env:appveyor_repo_commit_message`n`n$env:appveyor_repo_commit_message_extended".Replace("\n", "`n").Replace("`r", "").Replace("\r", "").TrimEnd()
+
+
+    $github_release_notes = $nuget_release_notes.Replace("`n", "\n")
 
 
     $file = "Foo\Foo.csproj"
@@ -21,7 +24,7 @@ before_build:
     $package_release_notes = $doc.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
 
 
-    $package_release_notes.InnerText = $release_notes
+    $package_release_notes.InnerText = $nuget_release_notes
 
 
     $doc.Save((get-item $file))
@@ -35,12 +38,14 @@ before_build:
     $package_tag = "$package_id.$package_version"
 
 
-    Set-AppveyorBuildVariable -Name "release_notes" -Value $release_notes
+    Set-AppveyorBuildVariable -Name "release_notes" -Value $github_release_notes
 
     Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
 
 
-    "Release notes: $release_notes"
+    "Nuget release notes: $nuget_release_notes"
+
+    "Github release notes: $github_release_notes"
 
     "Package tag: $package_tag"
 
