@@ -66,3 +66,11 @@ deploy:
   on:
     appveyor_repo_tag: true
     appveyor_repo_tag_name: $(package_tag)
+notifications:
+- provider: Email
+  to:
+  - brianfriesen@quickenloans.com
+  - brian.friesen@gmail.com
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true
