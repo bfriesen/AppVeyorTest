@@ -26,7 +26,7 @@ before_build:
            Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
          } else {
            $package_version_node.InnerText = "$Env:version"
-   - ps: }
+         }
    - ps: 
    - ps: $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
    - ps: $package_release_notes_node.InnerText = $package_release_notes
