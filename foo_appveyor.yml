@@ -11,6 +11,7 @@ before_build:
    - ps: $sln_path = "Foo.sln"
    - ps: $csproj_path = "Foo\Foo.csproj"
    - ps: $nuget_release_notes = "$env:appveyor_repo_commit_message`n`n$env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
+   - ps: echo $nuget_release_notes
    - ps: $csproj = [xml](Get-Content $csproj_path)
    - ps: $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
    - ps: $package_version = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion").InnerText
