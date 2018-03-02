@@ -8,49 +8,20 @@ only_commits:
    - Foo.sln
    - foo_appveyor.yml
 before_build:
-- ps: >-
-    $nuget_release_notes = "$env:appveyor_repo_commit_message`n`n$env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
-
-
-    $github_release_notes = "### $nuget_release_notes".Replace("`n", "\n")
-
-
-    $file = "Foo\Foo.csproj"
-
-
-    $doc = [xml](Get-Content $file)
-
-
-    $package_release_notes = $doc.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
-
-
-    $package_release_notes.InnerText = $nuget_release_notes
-
-
-    $doc.Save((get-item $file))
-
-
-    $package_id = $doc.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
-
-    $package_version = $doc.SelectSingleNode("/Project/PropertyGroup/PackageVersion").InnerText
-
-
-    $package_tag = "$package_id.$package_version"
-
-
-    Set-AppveyorBuildVariable -Name "release_notes" -Value $github_release_notes
-
-    Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
-
-
-    "Nuget release notes: $nuget_release_notes"
-
-    "Github release notes: $github_release_notes"
-
-    "Package tag: $package_tag"
-
-
-    nuget restore Foo.sln
+   - ps: $sln_path = "Foo.sln"
+   - ps: $csproj_path = "Foo\Foo.csproj"
+   - ps: $nuget_release_notes = "$env:appveyor_repo_commit_message`n`n$env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
+   - ps: "Nuget release notes: $nuget_release_notes"
+   - ps: $csproj = [xml](Get-Content $csproj_path)
+   - ps: $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
+   - ps: $package_version = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion").InnerText
+   - ps: $package_tag = "$package_id.$package_version"
+   - ps: Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
+   - ps: "Package tag: $package_tag"
+   - ps: $package_release_notes = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
+   - ps: $package_release_notes.InnerText = $nuget_release_notes
+   - ps: $csproj.Save((Get-Item $csproj_path))
+   - ps: nuget restore $sln_path
 build:
   project: Foo.sln
   verbosity: minimal
