@@ -22,10 +22,10 @@ before_build:
    - ps: $package_tag = "$package_id.$package_version"
    - ps: 
    - ps: If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $package_tag) {
-   - ps:   Set-AppveyorBuildVariable -Name "version" -Value $package_version
-   - ps:   Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
-   - ps: } else {
-   - ps:   $package_version_node.InnerText = "$Env:version"
+           Set-AppveyorBuildVariable -Name "version" -Value $package_version
+           Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
+         } else {
+           $package_version_node.InnerText = "$Env:version"
    - ps: }
    - ps: 
    - ps: $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
