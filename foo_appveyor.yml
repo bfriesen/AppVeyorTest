@@ -17,7 +17,7 @@ before_build:
       $csproj = [xml](Get-Content $csproj_path)
       
       $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
-      - ps:
+
       $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
       $package_version = $package_version_node.InnerText
       $package_tag = "$package_id.$package_version"
