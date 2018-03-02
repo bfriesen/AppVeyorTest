@@ -7,14 +7,14 @@
 
   <PropertyGroup>
     <PackageId>Foo</PackageId>
-    <PackageVersion>1.1.10</PackageVersion>
+    <PackageVersion>1.1.11</PackageVersion>
     <Authors>Quicken Loans</Authors>
     <Description></Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes></PackageReleaseNotes>
     <Copyright>Copyright 2018 (c) Quicken Loans Corporation. All rights reserved.</Copyright>
     <PackageTags>Foo</PackageTags>
-    <Version>1.1.10</Version>
+    <Version>1.1.11</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
