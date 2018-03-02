@@ -23,10 +23,8 @@ before_build:
       $package_tag = "$package_id.$package_version"
       
       If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $package_tag) {
-         echo "package_tag: $package_tag"
          Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
       } else {
-         echo "appveyor_build_version: $Env:appveyor_build_version"
          $package_version_node.InnerText = "$Env:appveyor_build_version"
       }
       
