@@ -29,12 +29,12 @@ before_build:
          $package_version_node.InnerText = "$Env:version"
       }
       
-      package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
-      package_release_notes_node.InnerText = $package_release_notes
+      $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
+      $package_release_notes_node.InnerText = $package_release_notes
       
-      csproj.Save((Get-Item $csproj_path))
+      $csproj.Save((Get-Item $csproj_path))
       
-      uget restore $sln_path
+      nuget restore $sln_path
 build:
   project: Foo.sln
   verbosity: minimal
