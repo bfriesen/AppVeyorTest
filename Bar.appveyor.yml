@@ -3,37 +3,37 @@ image: Visual Studio 2017
 configuration: Release
 only_commits:
   files:
-  - Bar/
-  - Bar.Tests/
-  - Bar.sln
-  - Bar.appveyor.yml
+    - Bar/
+    - Bar.Tests/
+    - Bar.sln
+    - Bar.appveyor.yml
 before_build:
 - ps: |
-  $sln_path = "Bar.sln"
-  $csproj_path = "Bar\Bar.csproj"
+    $sln_path = "Bar.sln"
+    $csproj_path = "Bar\Bar.csproj"
+    
+    $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
+    
+    $csproj = [xml](Get-Content $csproj_path)
+    
+    $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
   
-  $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
-  
-  $csproj = [xml](Get-Content $csproj_path)
-  
-  $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
-
-  $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
-  $package_version = $package_version_node.InnerText
-  $csproj_build_version = "$package_id.$package_version"
-  
-  If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $csproj_build_version) {
-    Update-AppVeyorBuild -Version $csproj_build_version
-  } else {
-    $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
-  }
-  
-  $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
-  $package_release_notes_node.InnerText = $commit_message
-  
-  $csproj.Save((Get-Item $csproj_path))
-  
-  nuget restore $sln_path
+    $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
+    $package_version = $package_version_node.InnerText
+    $csproj_build_version = "$package_id.$package_version"
+    
+    If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $csproj_build_version) {
+        Update-AppVeyorBuild -Version $csproj_build_version
+    } else {
+        $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
+    }
+    
+    $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
+    $package_release_notes_node.InnerText = $commit_message
+    
+    $csproj.Save((Get-Item $csproj_path))
+    
+    nuget restore $sln_path
 build:
   project: Bar.sln
   verbosity: minimal
