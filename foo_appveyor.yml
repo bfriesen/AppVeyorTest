@@ -12,7 +12,7 @@ before_build:
       $sln_path = "Foo.sln"
       $csproj_path = "Foo\Foo.csproj"
       
-      $package_release_notes = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
+      $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
       
       $csproj = [xml](Get-Content $csproj_path)
       
@@ -20,17 +20,16 @@ before_build:
 
       $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
       $package_version = $package_version_node.InnerText
-      $package_tag = "$package_id.$package_version"
+      $csproj_build_version = "$package_id.$package_version"
       
-      If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $package_tag) {
-         Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
-         Update-AppVeyorBuild -Version $package_version
+      If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $csproj_build_version) {
+         Update-AppVeyorBuild -Version $csproj_build_version
       } else {
          $package_version_node.InnerText = "$Env:appveyor_build_version"
       }
       
       $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
-      $package_release_notes_node.InnerText = $package_release_notes
+      $package_release_notes_node.InnerText = $commit_message
       
       $csproj.Save((Get-Item $csproj_path))
       
@@ -49,7 +48,7 @@ deploy:
     secure: yjDw1QLeuxM3Wvq9ZEJIB8JaEK/L2e7MhwrKicm3/SBh0FwbAEb3Fpg82h0fFALU
   on:
     appveyor_repo_tag: true
-    appveyor_repo_tag_name: $(package_tag)
+    appveyor_repo_tag_name: $(appveyor_build_version)
 notifications:
 - provider: Email
   to:
