@@ -24,6 +24,7 @@ before_build:
       
       If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $package_tag) {
          Set-AppveyorBuildVariable -Name "package_tag" -Value $package_tag
+         Set-AppveyorBuildVariable -Name "appveyor_build_version" -Value $package_version
       } else {
          $package_version_node.InnerText = "$Env:appveyor_build_version"
       }
