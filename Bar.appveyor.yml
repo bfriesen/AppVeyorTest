@@ -1,25 +1,58 @@
-version: '{build}'
+version: 'Bar.{build}.0.0-ci'
 image: Visual Studio 2017
 configuration: Release
+only_commits:
+  files:
+  - Bar/
+  - Bar.Tests/
+  - Bar.sln
+  - Bar.appveyor.yml
 before_build:
-- ps: nuget restore Bar.sln
+- ps: |
+  $sln_path = "Bar.sln"
+  $csproj_path = "Bar\Bar.csproj"
+  
+  $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
+  
+  $csproj = [xml](Get-Content $csproj_path)
+  
+  $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
+
+  $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
+  $package_version = $package_version_node.InnerText
+  $csproj_build_version = "$package_id.$package_version"
+  
+  If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $csproj_build_version) {
+    Update-AppVeyorBuild -Version $csproj_build_version
+  } else {
+    $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
+  }
+  
+  $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
+  $package_release_notes_node.InnerText = $commit_message
+  
+  $csproj.Save((Get-Item $csproj_path))
+  
+  nuget restore $sln_path
 build:
   project: Bar.sln
   verbosity: minimal
 artifacts:
-- path: Bar\bin\Release\Bar.*.nupkg
+- path: '**/Bar.*.nupkg'
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
-  release: $(appveyor_repo_tag_name)
+  release: $(appveyor_repo_commit_message)
+  description: $(appveyor_repo_commit_message_extended)
   auth_token:
     secure: yjDw1QLeuxM3Wvq9ZEJIB8JaEK/L2e7MhwrKicm3/SBh0FwbAEb3Fpg82h0fFALU
   on:
     appveyor_repo_tag: true
-    appveyor_repo_tag_name: /Bar\.\d+.\d+.\d+(-\w+)?/
-only_commits:
- files:
-   - Bar/
-   - Bar.Tests/
-   - Bar.sln
-   - Bar.appveyor.yml
+    appveyor_repo_tag_name: $(appveyor_build_version)
+notifications:
+- provider: Email
+  to:
+  - brianfriesen@quickenloans.com
+  on_build_success: false
+  on_build_failure: false
+  on_build_status_changed: true
