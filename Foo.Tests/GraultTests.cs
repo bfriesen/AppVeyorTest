@@ -1,7 +1,6 @@
-using Foo;
 using Xunit;
 
-namespace FooTests
+namespace Foo.Tests
 {
     public class GraultTests
     {

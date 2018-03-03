@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foo", "Foo\Foo.csproj", "{C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bar", "Bar\Bar.csproj", "{3D2369CB-2562-4960-A975-A4FFCBDC2616}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FooTests", "FooTests\FooTests.csproj", "{667F809F-0581-4C56-8ACB-E65DFC7640A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foo.Tests", "Foo.Tests\Foo.Tests.csproj", "{667F809F-0581-4C56-8ACB-E65DFC7640A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarTests", "BarTests\BarTests.csproj", "{1C168BD5-F8B7-4DF3-90A0-D20F7D7DE085}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bar.Tests", "Bar.Tests\Bar.Tests.csproj", "{1C168BD5-F8B7-4DF3-90A0-D20F7D7DE085}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

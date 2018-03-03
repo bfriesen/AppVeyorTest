@@ -4,9 +4,9 @@ configuration: Release
 only_commits:
   files:
   - Foo/
-  - FooTests/
+  - Foo.Tests/
   - Foo.sln
-  - foo_appveyor.yml
+  - Foo.appveyor.yml
 before_build:
 - ps: |
   $sln_path = "Foo.sln"

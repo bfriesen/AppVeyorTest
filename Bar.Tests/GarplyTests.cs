@@ -1,8 +1,6 @@
-using Bar;
-using System;
 using Xunit;
 
-namespace BarTests
+namespace Bar.Tests
 {
     public class GarplyTests
     {

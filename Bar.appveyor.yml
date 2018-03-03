@@ -20,6 +20,6 @@ deploy:
 only_commits:
  files:
    - Bar/
-   - BarTests/
+   - Bar.Tests/
    - Bar.sln
-   - bar_appveyor.yml
+   - Bar.appveyor.yml
