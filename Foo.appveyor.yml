@@ -27,6 +27,13 @@ before_build:
     #
     # *The current build is a deploy build if APPVEYOR_REPO_TAG is 'true' and APPVEYOR_REPO_TAG_NAME
     # is the name of the csproj's package version. Otherwise, it is a CI build.
+    
+    function Get-Csproj-Build-Version ($csproj)
+    {
+        $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
+        $package_version = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion").InnerText
+        Return "$package_id.$package_version"
+    }
 
     function Update-Package-Release-Notes ($csproj)
     {
@@ -36,30 +43,34 @@ before_build:
         $package_release_notes_node.InnerText = $commit_message
     }
 
-    function Synchronize-Versions-And-Set-Build-Variable ($csproj)
+    function Synchronize-AppVeyor-And-Csproj-Versions ($csproj)
     {
-        $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
-
-        $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
-        $package_version = $package_version_node.InnerText
-        $csproj_build_version = "$package_id.$package_version"
+        $csproj_build_version = Get-Csproj-Build-Version $csproj
 
         If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $csproj_build_version) {
             # If this is a deploy build, update the AppVeyor build version to match the csproj's package version.
             Update-AppVeyorBuild -Version $csproj_build_version
         } else {
             # Else, update the csproj's package version to match the AppVeyor build version.
+            $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
             $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
         }
-
+    }
+    
+    function Set-Csproj-Build-Version-Variable ($csproj)
+    {
+        $csproj_build_version = Get-Csproj-Build-Version $csproj
         Set-AppVeyorBuildVariable -Name "csproj_build_version" -Value $csproj_build_version
     }
 
+    # The $csproj xml object contains the contents of the csproj file.
     $csproj = [xml](Get-Content $csproj_path)
 
     Update-Package-Release-Notes $csproj
-    Synchronize-Versions-And-Set-Build-Variable $csproj    
+    Synchronize-AppVeyor-And-Csproj-Versions $csproj
+    Set-Csproj-Build-Version-Variable $csproj
 
+    # Patch the csproj file with the modified xml object after all changes have been made.
     $csproj.Save((Get-Item $csproj_path))
 
     nuget restore $sln_path
