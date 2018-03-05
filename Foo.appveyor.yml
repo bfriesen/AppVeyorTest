@@ -44,7 +44,7 @@ before_build:
     function Update-Package-Release-Notes ($csproj)
     {
         $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended"
-            .Replace("\n", "`n").TrimEnd()
+        $commit_message = $commit_message.Replace("\n", "`n").TrimEnd()
 
         $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
         $package_release_notes_node.InnerText = $commit_message
