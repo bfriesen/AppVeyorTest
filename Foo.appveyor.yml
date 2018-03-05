@@ -25,7 +25,7 @@ before_build:
     # Settings
     $sln_path = "Foo.sln"
     $csproj_path = "Foo\Foo.csproj"
-    
+
     function Update-Package-Release-Notes ($csproj)
     {
         $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
@@ -33,7 +33,7 @@ before_build:
         $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
         $package_release_notes_node.InnerText = $commit_message
     }
-    
+
     function Synchronize-AppVeyor-Csproj-Versions ($csproj)
     {
         $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
@@ -45,13 +45,13 @@ before_build:
         If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $csproj_build_version) {
             # If this is a deploy build, update the AppVeyor build version to match the csproj's package version.
             Update-AppVeyorBuild -Version $csproj_build_version
-            
-            # The 'csproj_build_version' build variable is used to control whether a tagged commit is deployed.
-            Set-AppVeyorBuildVariable -Name "csproj_build_version" -Value $csproj_build_version
         } else {
             # Else, update the csproj's package version to match the AppVeyor build version.
             $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
         }
+
+        # The 'csproj_build_version' build variable is used to control whether a tagged commit is deployed.
+        Set-AppVeyorBuildVariable -Name "csproj_build_version" -Value $csproj_build_version
     }
 
     $csproj = [xml](Get-Content $csproj_path)
