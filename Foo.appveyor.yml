@@ -9,7 +9,7 @@ only_commits:
   - Foo.appveyor.yml
 before_build:
 - ps: |
-    # This before_build script does three things:
+    # This before_build script does four things:
     #
     # 1) Update the csproj's package release notes to be the current commit message.
     # 2) Synchronize the AppVeyor build version and the csproj's package version.
@@ -17,7 +17,9 @@ before_build:
     #      the csproj's nuget package version.
     #   b) If the current build is a CI build*, update the csproj's package version to match
     #      the AppVeyor build version.
-    # 3) Restore packages for the sln.
+    # 3) Set an AppVeyor build variable named 'csproj_build_version' to the csproj's package version.
+    #    This value is used by deploy providers to determine whether the current commit should be deployed.
+    # 4) Restore packages for the sln.
     #
     # *The current build is a deploy build if APPVEYOR_REPO_TAG is 'true' and APPVEYOR_REPO_TAG_NAME
     # is the name of the csproj's package version. Otherwise, it is a CI build.
@@ -34,7 +36,7 @@ before_build:
         $package_release_notes_node.InnerText = $commit_message
     }
 
-    function Synchronize-AppVeyor-Csproj-Versions ($csproj)
+    function Synchronize-Versions-And-Set-Build-Variable ($csproj)
     {
         $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
 
@@ -50,14 +52,13 @@ before_build:
             $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
         }
 
-        # The 'csproj_build_version' build variable is used to control whether a tagged commit is deployed.
         Set-AppVeyorBuildVariable -Name "csproj_build_version" -Value $csproj_build_version
     }
 
     $csproj = [xml](Get-Content $csproj_path)
 
     Update-Package-Release-Notes $csproj
-    Synchronize-AppVeyor-Csproj-Versions $csproj    
+    Synchronize-Versions-And-Set-Build-Variable $csproj    
 
     $csproj.Save((Get-Item $csproj_path))
 
