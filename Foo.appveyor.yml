@@ -9,6 +9,10 @@ only_commits:
   - Foo.appveyor.yml
 before_build:
 - ps: |
+    # Settings
+    $sln_path = "Foo.sln"
+    $csproj_path = "Foo\Foo.csproj"
+
     # This before_build script does four things:
     #
     # 1) Update the csproj's package release notes to be the current commit message.
@@ -23,10 +27,6 @@ before_build:
     #
     # *The current build is a deploy build if APPVEYOR_REPO_TAG is 'true' and APPVEYOR_REPO_TAG_NAME
     # is the name of the csproj's package version. Otherwise, it is a CI build.
-
-    # Settings
-    $sln_path = "Foo.sln"
-    $csproj_path = "Foo\Foo.csproj"
 
     function Update-Package-Release-Notes ($csproj)
     {
