@@ -26,7 +26,7 @@ before_build:
     $sln_path = "Foo.sln"
     $csproj_path = "Foo\Foo.csproj"
     
-    function Update-Package-Release-Notes $csproj
+    function Update-Package-Release-Notes ($csproj)
     {
         $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
 
@@ -34,7 +34,7 @@ before_build:
         $package_release_notes_node.InnerText = $commit_message
     }
     
-    function Synchronize-AppVeyor-Csproj-Versions $csproj
+    function Synchronize-AppVeyor-Csproj-Versions ($csproj)
     {
         $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
 
