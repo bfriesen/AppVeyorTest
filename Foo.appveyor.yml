@@ -9,30 +9,55 @@ only_commits:
   - Foo.appveyor.yml
 before_build:
 - ps: |
+    # This script does three things:
+    #
+    # 1) Update the csproj's package release notes to be the current commit message.
+    # 2) Synchronize the AppVeyor build version and the csproj's package version.
+    #   a) If the current build is a deploy build*, update the AppVeyor build version to match
+    #      the csproj's nuget package version.
+    #   b) If the current build is a CI build*, update the csproj's package version to match
+    #      the AppVeyor build version.
+    # 3) Restore packages for the sln.
+    #
+    # *The current build is a deploy build if APPVEYOR_REPO_TAG is 'true' and APPVEYOR_REPO_TAG_NAME
+    # is the name of the csproj's package version. Otherwise, it is a CI build.
+
+    # Settings
     $sln_path = "Foo.sln"
     $csproj_path = "Foo\Foo.csproj"
     
-    $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
-    
-    $csproj = [xml](Get-Content $csproj_path)
-    
-    $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
-  
-    $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
-    $package_version = $package_version_node.InnerText
-    $csproj_build_version = "$package_id.$package_version"
-    
-    If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $csproj_build_version) {
-        Update-AppVeyorBuild -Version $csproj_build_version
-    } else {
-        $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
+    function Update-Package-Release-Notes $csproj
+    {
+        $commit_message = "$Env:appveyor_repo_commit_message`n`n$Env:appveyor_repo_commit_message_extended".Replace("\n", "`n").TrimEnd()
+
+        $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
+        $package_release_notes_node.InnerText = $commit_message
     }
     
-    $package_release_notes_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageReleaseNotes")
-    $package_release_notes_node.InnerText = $commit_message
-    
+    function Synchronize-AppVeyor-Csproj-Versions $csproj
+    {
+        $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
+
+        $package_id = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText
+        $package_version = $package_version_node.InnerText
+        $csproj_build_version = "$package_id.$package_version"
+
+        If ($Env:appveyor_repo_tag -eq "true" -AND $Env:appveyor_repo_tag_name -eq $csproj_build_version) {
+            # If this is a deploy build, update the AppVeyor build version to match the csproj's package version.
+            Update-AppVeyorBuild -Version $csproj_build_version
+        } else {
+            # Else, update the csproj's package version to match the AppVeyor build version.
+            $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
+        }
+    }
+
+    $csproj = [xml](Get-Content $csproj_path)
+
+    Update-Package-Release-Notes $csproj
+    Synchronize-AppVeyor-Csproj-Versions $csproj    
+
     $csproj.Save((Get-Item $csproj_path))
-    
+
     nuget restore $sln_path
 build:
   project: Foo.sln
