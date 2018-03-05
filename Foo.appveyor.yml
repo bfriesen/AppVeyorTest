@@ -9,10 +9,15 @@ only_commits:
   - Foo.appveyor.yml
 before_build:
 - ps: |
-    # Settings
+    # The path to the solution to restore.
     $sln_path = "Foo.sln"
+    
+    # The path to the main csproj file. It will be patched during the build.
     $csproj_path = "Foo\Foo.csproj"
-
+    
+    # The version of the build artifact's nuget package when created by CI builds.
+    $ci_package_version = "$Env:appveyor_build_number.0.0-ci"
+    
     # This before_build script does four things:
     #
     # 1) Update the csproj's package release notes to be the current commit message.
@@ -23,10 +28,11 @@ before_build:
     #      the AppVeyor build version.
     # 3) Set an AppVeyor build variable named 'csproj_build_version' to the csproj's package version.
     #    This value is used by deploy providers to determine whether the current commit should be deployed.
-    # 4) Restore packages for the sln.
+    # 4) Restore packages for the sln. .NET Standard libraries won't build without restoring first.
     #
-    # *The current build is a deploy build if APPVEYOR_REPO_TAG is 'true' and APPVEYOR_REPO_TAG_NAME
-    # is the name of the csproj's package version. Otherwise, it is a CI build.
+    # *The current build is a deploy build if the 'appveyor_repo_tag' variable is 'true' and the
+    #  'appveyor_repo_tag_name' variable is the the value of the 'csproj_build_version' variable, as set in
+    #  #3 above. Otherwise, the current build is a CI build.
     
     function Get-Csproj-Build-Version ($csproj)
     {
@@ -53,7 +59,7 @@ before_build:
         } else {
             # Else, update the csproj's package version to match the AppVeyor build version.
             $package_version_node = $csproj.SelectSingleNode("/Project/PropertyGroup/PackageVersion")
-            $package_version_node.InnerText = "$Env:appveyor_build_number.0.0-ci"
+            $package_version_node.InnerText = $ci_package_version
         }
     }
     
